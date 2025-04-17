@@ -3,131 +3,78 @@
 # ─── VARIABLES ────────────────────────────────────────────────────────────────
 ZSH_CUSTOM="${HOME}/.oh-my-zsh/custom"
 ZSHRC="${HOME}/.zshrc"
-ALIASES_FILE="/etc/zsh/.zsh_aliases"  # Adapté à ta config partagée
+ALIASES_FILE="/etc/zsh/.zsh_aliases"
 PLUGINS_DIR="$ZSH_CUSTOM/plugins"
 THEMES_DIR="$ZSH_CUSTOM/themes"
 
-# ─── OPTION POUR SAUVEGARDER LE MDP UTILISATEUR TEMPORAIREMENT ───────────────────
-echo "[*] Sauvegarde temporaire du mot de passe sudo pour faciliter l'installation..."
-sudo -v  # Demande le mot de passe sudo pour le rendre valide pendant un certain temps
+# ─── MOT DE PASSE SUDO ────────────────────────────────────────────────────────
+echo "[*] Authentification sudo requise..."
+sudo -v
 
-# ─── INSTALLATION DE ZSH ──────────────────────────────────────────────────────
-echo "[*] Installation de Zsh..."
-sudo apt update && sudo apt install -y zsh git curl wget fonts-powerline
+# ─── INSTALLATION ZSH ET DÉPENDANCES ──────────────────────────────────────────
+echo "[*] Installation de Zsh et des dépendances..."
+sudo dnf install -y zsh git curl wget fzf autojump util-linux-user powerline-fonts
 
-# ─── INSTALLATION DE OH MY ZSH ────────────────────────────────────────────────
+# ─── OH MY ZSH ───────────────────────────────────────────────────────────────
 echo "[*] Installation de Oh My Zsh..."
 export RUNZSH=no
 export CHSH=no
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# ─── PLUGINS ──────────────────────────────────────────────────────────────────
+# ─── PLUGINS ─────────────────────────────────────────────────────────────────
 echo "[*] Installation des plugins..."
 
-which fzf || sudo apt install fzf -y
+# Plugins avec condition
+[[ ! -d "$PLUGINS_DIR/zsh-autosuggestions" ]] && \
+git clone https://github.com/zsh-users/zsh-autosuggestions "$PLUGINS_DIR/zsh-autosuggestions"
 
-which autojump || sudo apt install autojump -y
+[[ ! -d "$PLUGINS_DIR/zsh-syntax-highlighting" ]] && \
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$PLUGINS_DIR/zsh-syntax-highlighting"
 
-which wget || sudo apt install wget -y
+[[ ! -d "$PLUGINS_DIR/zsh-vi-mode" ]] && \
+git clone https://github.com/jeffreytse/zsh-vi-mode "$PLUGINS_DIR/zsh-vi-mode"
 
-which curl || sudo apt install curl -y
+[[ ! -d "$PLUGINS_DIR/fzf-tab" ]] && \
+git clone https://github.com/Aloxaf/fzf-tab "$PLUGINS_DIR/fzf-tab"
 
-# zsh-autosuggestions
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
-fi
+[[ ! -d "$PLUGINS_DIR/zsh-completions" ]] && \
+git clone https://github.com/zsh-users/zsh-completions "$PLUGINS_DIR/zsh-completions"
 
-# zsh-syntax-highlighting
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
-fi
+# Thème Powerlevel10k
+[[ ! -d "$THEMES_DIR/powerlevel10k" ]] && \
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$THEMES_DIR/powerlevel10k"
 
-# zsh-vi-mode
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-vi-mode" ]; then
-    git clone https://github.com/jeffreytse/zsh-vi-mode "$ZSH_CUSTOM/plugins/zsh-vi-mode"
-fi
-
-# fzf-tab (nécessite que fzf soit déjà installé)
-if [ ! -d "$ZSH_CUSTOM/plugins/fzf-tab" ]; then
-    git clone https://github.com/Aloxaf/fzf-tab "$ZSH_CUSTOM/plugins/fzf-tab"
-fi
-
-# zsh-completions
-if [ ! -d "$ZSH_CUSTOM/plugins/zsh-completions" ]; then
-    git clone https://github.com/zsh-users/zsh-completions "$ZSH_CUSTOM/plugins/zsh-completions"
-fi
-
-# theme powerlevel10k
-if [ ! -d "$THEMES_DIR/powerlevel10k" ]; then
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$THEMES_DIR/powerlevel10k"
-fi
-
-# ─── INSTALLATION DES POLICES POWERLEVEL10K ───────────────────────────────────
-echo "[*] Téléchargement et installation des polices MesloLGS NF..."
-
+# ─── POLICES ─────────────────────────────────────────────────────────────────
+echo "[*] Installation des polices MesloLGS NF..."
 FONT_DIR="${HOME}/.local/share/fonts"
 mkdir -p "$FONT_DIR"
+URL_BASE="https://github.com/romkatv/powerlevel10k-media/raw/master"
 
-# Liens des polices
-FONT_URLS=(
-    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
-    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
-    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf"
-    "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf"
-)
-
-for url in "${FONT_URLS[@]}"; do
-    filename=$(basename "$url")
-    wget -q "$url" -O "$FONT_DIR/$filename"
+for font in Regular Bold Italic "Bold Italic"; do
+    wget -q "$URL_BASE/MesloLGS%20NF%20${font}.ttf" -O "$FONT_DIR/MesloLGS NF ${font}.ttf"
 done
 
-# Mettre à jour le cache des polices
-echo "[*] Mise à jour du cache des polices..."
 fc-cache -fv "$FONT_DIR"
 
-echo "✅ Polices MesloLGS NF installées. Pense à sélectionner 'MesloLGS NF' comme police dans ton terminal pour un affichage optimal de Powerlevel10k."
-
-# ─── FICHIER .ZSHRC ───────────────────────────────────────────────────────────
-
-echo "[*] Configuration du fichier .zshrc..."
-
-if [ -w "$ZSHRC" ]; then
-    cat > "$ZSHRC" <<EOF
-    # Path to Oh My Zsh
-    export ZSH="\$HOME/.oh-my-zsh"
-    
-    # Theme
-    ZSH_THEME="powerlevel10k/powerlevel10k"
-    
-    # Plugins
-    plugins=(git sudo z autojump zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode fzf-tab zsh-completions)
-
-    # Source Oh My Zsh
-    source \$ZSH/oh-my-zsh.sh
-    
-    # Autojump
-    [[ -s /usr/share/autojump/autojump.zsh ]] && . /usr/share/autojump/autojump.zsh
-    
-    # Aliases communs
-    [ -f $ALIASES_FILE ] && source $ALIASES_FILE
-    
-    # Éditeur par défaut
-    export EDITOR="nano"
-    export VISUAL="nano"
-    
-    # Amélioration de l’autocomplétion
-    autoload -U compinit && compinit
-    
-    # Powerlevel10k config (optionnel)
-    [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# ─── ZSHRC ────────────────────────────────────────────────────────────────────
+echo "[*] Configuration de .zshrc..."
+cat > "$ZSHRC" <<EOF
+export ZSH="\$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+plugins=(git sudo z autojump zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode fzf-tab zsh-completions)
+source \$ZSH/oh-my-zsh.sh
+[[ -s /usr/share/autojump/autojump.zsh ]] && source /usr/share/autojump/autojump.zsh
+[ -f $ALIASES_FILE ] && source $ALIASES_FILE
+export EDITOR="nano"
+export VISUAL="nano"
+autoload -U compinit && compinit
+[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 EOF
-else
-    echo "Le fichier $ZSHRC n'est pas accessible en écriture."
-fi
 
-# ─── FICHIER .ALIASES ────────────────────────────────────────────────────────
-if [ -w "$ALIASES_FILE" ]; then
-    sudo tee "$ALIASES_FILE" > /dev/null <<EOF
+# ─── ALIASES ──────────────────────────────────────────────────────────────────
+echo "[*] Configuration des aliases globaux..."
+sudo mkdir -p "$(dirname $ALIASES_FILE)"
+sudo tee "$ALIASES_FILE" > /dev/null <<'EOF'
 ## Aliases pour la navigation dans les répertoires
 
 # Aller au répertoire parent
@@ -294,10 +241,9 @@ else
     echo "Le fichier $ALIASES_FILE n'est pas accessible en écriture."
 fi
 
-# ─── SHELL PAR DÉFAUT ─────────────────────────────────────────────────────────
-echo "[*] Changement du shell par défaut vers zsh..."
+# ─── SHELL PAR DÉFAUT ────────────────────────────────────────────────────────
+echo "[*] Passage à Zsh comme shell par défaut..."
 chsh -s "$(which zsh)"
 
-echo "✅ Configuration terminée. Lorsque tu modifies les paramètres de Oh My Zsh, tu peux redémarrer ton terminal ou exécuter : source ~/.zshrc"
+echo "✅ Configuration terminée. Redémarre ton terminal ou exécute : source ~/.zshrc"
 
-echo "ATTENTION ! : Tu dois modifier le fichier ~/.zshrc"
