@@ -74,7 +74,7 @@ EOF
 # ─── ALIASES ──────────────────────────────────────────────────────────────────
 echo "[*] Configuration des aliases globaux..."
 sudo mkdir -p "$(dirname $ALIASES_FILE)"
-sudo tee "$ALIASES_FILE" > /dev/null <<'EOF'
+sudo tee "$ALIASES_FILE" > /dev/null <<EOF
 ## Aliases pour la navigation dans les répertoires
 
 # Aller au répertoire parent
