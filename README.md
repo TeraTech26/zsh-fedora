@@ -1,38 +1,36 @@
-Zsh Config
+# Zsh Config
+
 Ce dépôt contient une configuration Zsh personnalisée, avec des plugins et un thème pour Oh My Zsh.
 
-Sommaire
-Installation
+## Sommaire
 
-Précision importante
+- [Installation](#installation)
+- [Précision importante](#précision-importante)
+- [Personnalisation](#personnalisation)
+- [Plugins inclus](#plugins-inclus)
+- [Licence](#licence)
 
-Personnalisation
+## Installation
 
-Plugins inclus
+1. **Cloner le dépôt** dans le répertoire des plugins d'Oh My Zsh :
 
-Licence
+   ```bash
+   bash <(curl -fsSL https://raw.githubusercontent.com/TeraTech26/zsh-config/main/install_zsh_config.sh)
+   ```
 
-Installation
-Cloner le dépôt dans le répertoire des plugins d'Oh My Zsh :
+2. **Recharger la configuration Zsh** :
 
-bash
-Copier
-Modifier
-bash <(curl -fsSL https://raw.githubusercontent.com/TeraTech26/zsh-config/main/install_zsh_config.sh)
-Recharger la configuration Zsh :
+   Après l'installation, recharger ta configuration Zsh en exécutant :
 
-Après l'installation, recharger ta configuration Zsh en exécutant :
+   ```bash
+   source ~/.zshrc
+   ```
 
-bash
-Copier
-Modifier
-source ~/.zshrc
-Précision importante
-Si aucun des "Aliases" ne fonctionnent, il faut créer le fichier .zsh_aliases dans le répertoire /etc/zsh et copier le code suivant dans le fichier créé :
+## Précision importante
 
-.zsh_aliases
-Copier
-Modifier
+Si aucun des "Aliases" ne fonctionnent, il faut créer le fichier `.zsh_aliases` dans le répertoire `/etc/zsh` et copier le code suivant dans le fichier créé :
+
+\`\`\`bash
 ## Aliases pour la navigation dans les répertoires
 
 alias ..="cd .."
@@ -109,29 +107,25 @@ alias edit="nano"
 alias gsave="git add . && git commit -m 'Auto save' && git push"
 alias killchrome="pkill chrome"
 alias killfirefox="pkill firefox"
-Personnalisation
-Tu peux personnaliser le fichier ~/.zshrc pour changer le thème ou ajouter d'autres plugins.
+\`\`\`
 
-Les plugins sont configurés dans le fichier ~/.zshrc sous la section plugins=().
+## Personnalisation
 
-Plugins inclus
-git — Commandes Git pratiques.
+- Tu peux personnaliser le fichier `~/.zshrc` pour changer le thème ou ajouter d'autres plugins.
+- Les plugins sont configurés dans le fichier `~/.zshrc` sous la section `plugins=()`.
 
-z — Navigation rapide par historique.
+## Plugins inclus
 
-sudo — Simplifie les commandes avec sudo.
+1. **git** — Commandes Git pratiques.
+2. **z** — Navigation rapide par historique.
+3. **sudo** — Simplifie les commandes avec sudo.
+4. **autojump** — Navigation rapide entre dossiers.
+5. **zsh-autosuggestions** — Suggestions de commandes en direct.
+6. **zsh-syntax-highlighting** — Mise en couleur de la syntaxe.
+7. **fzf-tab** — Auto-complétion avancée avec `fzf`.
+8. **zsh-vi-mode** — Mode d’édition façon `vi`.
+9. **zsh-completions** — Complétions supplémentaires pour Zsh.
 
-autojump — Navigation rapide entre dossiers.
+## Licence
 
-zsh-autosuggestions — Suggestions de commandes en direct.
-
-zsh-syntax-highlighting — Mise en couleur de la syntaxe.
-
-fzf-tab — Auto-complétion avancée avec fzf.
-
-zsh-vi-mode — Mode d’édition façon vi.
-
-zsh-completions — Complétions supplémentaires pour Zsh.
-
-Licence
 Ce projet est sous licence [MIT License].
