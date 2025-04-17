@@ -237,9 +237,6 @@ alias edit="nano"
 alias gsave="git add . && git commit -m 'Auto save' && git push"
 
 EOF
-else
-    echo "Le fichier $ALIASES_FILE n'est pas accessible en écriture."
-fi
 
 # ─── SHELL PAR DÉFAUT ────────────────────────────────────────────────────────
 echo "[*] Passage à Zsh comme shell par défaut..."
