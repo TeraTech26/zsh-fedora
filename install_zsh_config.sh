@@ -235,7 +235,6 @@ alias edit="nano"
 
 # Pour sauvegarder un fichier avec un commit git rapide
 alias gsave="git add . && git commit -m 'Auto save' && git push"
-
 EOF
 
 # ─── SHELL PAR DÉFAUT ────────────────────────────────────────────────────────
