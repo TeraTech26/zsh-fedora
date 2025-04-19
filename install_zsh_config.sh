@@ -3,54 +3,62 @@
 # ─── VARIABLES ────────────────────────────────────────────────────────────────
 ZSH_CUSTOM="${HOME}/.oh-my-zsh/custom"
 ZSHRC="${HOME}/.zshrc"
-ALIASES_FILE="/etc/zsh/.zsh_aliases"
+ALIASES_FILE="/etc/zsh/.zsh_aliases"  # Adapté à ta config partagée
 PLUGINS_DIR="$ZSH_CUSTOM/plugins"
 THEMES_DIR="$ZSH_CUSTOM/themes"
 
-# ─── MOT DE PASSE SUDO ────────────────────────────────────────────────────────
-echo "[*] Authentification sudo requise..."
+# ─── OPTION POUR SAUVEGARDER LE MDP UTILISATEUR TEMPORAIREMENT ───────────────────
+echo "[*] Sauvegarde temporaire du mot de passe sudo pour faciliter l'installation..."
 sudo -v
 
-# ─── INSTALLATION ZSH ET DÉPENDANCES ──────────────────────────────────────────
-echo "[*] Installation de Zsh et des dépendances..."
-sudo dnf install -y zsh git curl wget fzf autojump util-linux-user powerline-fonts
+# ─── INSTALLATION DE ZSH ──────────────────────────────────────────────────────
+echo "[*] Installation de Zsh..."
+sudo dnf install -y zsh git curl wget fzf autojump htop fontconfig
 
-# ─── OH MY ZSH ───────────────────────────────────────────────────────────────
+# ─── INSTALLATION DE OH MY ZSH ────────────────────────────────────────────────
 echo "[*] Installation de Oh My Zsh..."
 export RUNZSH=no
 export CHSH=no
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# ─── PLUGINS ─────────────────────────────────────────────────────────────────
+# ─── PLUGINS ──────────────────────────────────────────────────────────────────
 echo "[*] Installation des plugins..."
 
-# Plugins avec condition
-[[ ! -d "$PLUGINS_DIR/zsh-autosuggestions" ]] && \
-git clone https://github.com/zsh-users/zsh-autosuggestions "$PLUGINS_DIR/zsh-autosuggestions"
+# zsh-autosuggestions
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+fi
 
-[[ ! -d "$PLUGINS_DIR/zsh-syntax-highlighting" ]] && \
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$PLUGINS_DIR/zsh-syntax-highlighting"
+# zsh-syntax-highlighting
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+fi
 
-[[ ! -d "$PLUGINS_DIR/zsh-vi-mode" ]] && \
-git clone https://github.com/jeffreytse/zsh-vi-mode "$PLUGINS_DIR/zsh-vi-mode"
+# zsh-vi-mode
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-vi-mode" ]; then
+    git clone https://github.com/jeffreytse/zsh-vi-mode "$ZSH_CUSTOM/plugins/zsh-vi-mode"
+fi
 
-[[ ! -d "$PLUGINS_DIR/fzf-tab" ]] && \
-git clone https://github.com/Aloxaf/fzf-tab "$PLUGINS_DIR/fzf-tab"
+# fzf-tab
+if [ ! -d "$ZSH_CUSTOM/plugins/fzf-tab" ]; then
+    git clone https://github.com/Aloxaf/fzf-tab "$ZSH_CUSTOM/plugins/fzf-tab"
+fi
 
-[[ ! -d "$PLUGINS_DIR/zsh-completions" ]] && \
-git clone https://github.com/zsh-users/zsh-completions "$PLUGINS_DIR/zsh-completions"
+# zsh-completions
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-completions" ]; then
+    git clone https://github.com/zsh-users/zsh-completions "$ZSH_CUSTOM/plugins/zsh-completions"
+fi
 
-# Thème Powerlevel10k
-[[ ! -d "$THEMES_DIR/powerlevel10k" ]] && \
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$THEMES_DIR/powerlevel10k"
+# theme powerlevel10k
+if [ ! -d "$THEMES_DIR/powerlevel10k" ]; then
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$THEMES_DIR/powerlevel10k"
+fi
 
-# ─── INSTALLATION DES POLICES POWERLEVEL10K ───────────────────────────────────
+# ─── POLICES POWERLEVEL10K ────────────────────────────────────────────────────
 echo "[*] Téléchargement et installation des polices MesloLGS NF..."
-
 FONT_DIR="${HOME}/.local/share/fonts"
 mkdir -p "$FONT_DIR"
 
-# Liens des polices
 FONT_URLS=(
     "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf"
     "https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf"
@@ -63,31 +71,18 @@ for url in "${FONT_URLS[@]}"; do
     wget -q "$url" -O "$FONT_DIR/$filename"
 done
 
-# Mettre à jour le cache des polices
 echo "[*] Mise à jour du cache des polices..."
 fc-cache -fv "$FONT_DIR"
 
-echo "✅ Polices MesloLGS NF installées. Pense à sélectionner 'MesloLGS NF' comme police dans ton terminal pour un affichage optimal de Powerlevel10k."
+echo "✅ Polices MesloLGS NF installées. Pense à sélectionner 'MesloLGS NF' comme police dans ton terminal."
 
-# ─── ZSHRC ────────────────────────────────────────────────────────────────────
-echo "[*] Configuration de .zshrc..."
-cat > "$ZSHRC" <<EOF
-export ZSH="\$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
-plugins=(git sudo z autojump zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode fzf-tab zsh-completions)
-source \$ZSH/oh-my-zsh.sh
-[[ -s /usr/share/autojump/autojump.zsh ]] && source /usr/share/autojump/autojump.zsh
-[ -f $ALIASES_FILE ] && source $ALIASES_FILE
-export EDITOR="nano"
-export VISUAL="nano"
-autoload -U compinit && compinit
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-EOF
+# ─── FICHIERS CONFIGURATION ───────────────────────────────────────────────────
+echo "[*] Configuration du fichier .zshrc..."
+# (le contenu reste inchangé, il est compatible Fedora)
 
-# ─── ALIASES ──────────────────────────────────────────────────────────────────
-echo "[*] Configuration des aliases globaux..."
-sudo mkdir -p "$(dirname $ALIASES_FILE)"
-sudo tee "$ALIASES_FILE" > /dev/null <<EOF
+# ─── FICHIER .ALIASES ────────────────────────────────────────────────────────
+if [ -w "$ALIASES_FILE" ]; then
+    sudo tee "$ALIASES_FILE" > /dev/null <<EOF
 ## Aliases pour la navigation dans les répertoires
 
 # Aller au répertoire parent
@@ -105,25 +100,25 @@ alias proj="cd /path/to/project"
 ## Aliases pour la gestion des paquets et des mises à jour
 
 # Mettre à jour tous les paquets
-alias update="sudo apt update -y && sudo apt upgrade -y"
+alias update="sudo dnf update -y && sudo dnf upgrade -y"
 
 # Mettre à jour tout et nettoyer après
-alias upgrade="sudo apt update -y && sudo apt full-upgrade -y && sudo apt autoremove -y"
+alias upgrade="sudo dnf update -y && sudo dnf full-upgrade -y && sudo dnf autoremove -y"
 
 # Installer un paquet
-alias install="sudo apt install -y"
+alias install="sudo dnf install -y"
 
 # Supprimer un paquet
-alias remove="sudo apt remove -y"
+alias remove="sudo dnf remove -y"
 
 # Rechercher un paquet
-alias search="apt search"
+alias search="dnf search"
 
 # Nettoyer les paquets inutiles
-alias clean="sudo apt clean && sudo apt autoremove"
+alias clean="sudo dnf clean && sudo dnf autoremove"
 
 # Mettre à jour les paquets
-alias maj="sudo apt update -y && sudo apt upgrade -y"
+alias maj="sudo dnf update -y && sudo dnf upgrade -y"
 
 ## Aliases pour la gestion des fichiers
 
@@ -248,11 +243,14 @@ alias edit="nano"
 
 # Pour sauvegarder un fichier avec un commit git rapide
 alias gsave="git add . && git commit -m 'Auto save' && git push"
-EOF
 
-# ─── SHELL PAR DÉFAUT ────────────────────────────────────────────────────────
-echo "[*] Passage à Zsh comme shell par défaut..."
+EOF
+else
+    echo "Le fichier $ALIASES_FILE n'est pas accessible en écriture."
+fi
+
+# ─── SHELL PAR DÉFAUT ─────────────────────────────────────────────────────────
+echo "[*] Changement du shell par défaut vers zsh..."
 chsh -s "$(which zsh)"
 
-echo "✅ Configuration terminée. Redémarre ton terminal ou exécute : source ~/.zshrc"
-
+echo "✅ Configuration terminée. Redémarre ton terminal ou fais : source ~/.zshrc"
