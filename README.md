@@ -15,7 +15,7 @@ Ce dépôt contient une configuration Zsh personnalisée, avec des plugins et un
 1. **Cloner le dépôt** dans le répertoire des plugins d'Oh My Zsh :
 
    ```bash
-   bash <(curl -fsSL https://github.com/TeraTech26/zsh-fedora/blob/zsh-fedora/install_zsh_config.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/TeraTech26/zsh-fedora/zsh-fedora/install_zsh_config.sh)
    ```
 
 2. **Recharger la configuration Zsh** :
