@@ -15,7 +15,7 @@ Ce dépôt contient une configuration Zsh personnalisée, avec des plugins et un
 1. **Cloner le dépôt** dans le répertoire des plugins d'Oh My Zsh :
 
    ```bash
-   bash <(curl -fsSL https://raw.githubusercontent.com/TeraTech26/zsh-config/main/install_zsh_config.sh)
+   bash <(curl -fsSL https://raw.githubusercontent.com/TeraTech26/zsh-fedora/main/install_zsh_config.sh)
    ```
 
 2. **Recharger la configuration Zsh** :
@@ -28,18 +28,16 @@ Ce dépôt contient une configuration Zsh personnalisée, avec des plugins et un
 
 ## Précision importante
 
-Si aucun des "Aliases" ne fonctionnent, il faut créer le fichier `.zsh_aliases` dans le répertoire `/etc/zsh` et copier le code suivant dans le fichier créé :
+Si les alias ne fonctionnent pas, crée le fichier .zsh_aliases dans /etc/zsh avec ce contenu :
 
 \`\`\`bash
-## Aliases pour la navigation dans les répertoires
-
+# Navigation
 alias ..="cd .."
 alias ...="cd ../.."
 alias home="cd ~"
 alias proj="cd /path/to/project"
 
-## Aliases pour la gestion des paquets et des mises à jour (Fedora)
-
+# Gestion de paquets (Fedora)
 alias update="sudo dnf update -y && sudo dnf upgrade -y"
 alias upgrade="sudo dnf upgrade --refresh -y && sudo dnf autoremove -y"
 alias install="sudo dnf install -y"
@@ -48,8 +46,7 @@ alias search="dnf search"
 alias clean="sudo dnf clean all"
 alias maj="sudo dnf update -y && sudo dnf upgrade -y"
 
-## Aliases pour la gestion des fichiers
-
+# Fichiers
 alias ll="ls -alF"
 alias la="ls -A"
 alias l="ls -CF"
@@ -58,21 +55,18 @@ alias findf="find . -name"
 alias editbashrc="nano ~/.bashrc"
 alias editzshrc="nano ~/.zshrc"
 
-## Aliases pour la gestion de l'historique
-
+# Historique
 alias history="history | tail -n 20"
 alias histgrep="history | grep"
 
-## Aliases pour Git
-
+# Git
 alias gs="git status"
 alias ga="git add ."
 alias gc="git commit -m"
 alias gp="git push"
 alias gl="git log --oneline --graph --decorate --all"
 
-## Aliases pour des commandes courantes
-
+# Commandes utiles
 alias mem="free -h"
 alias disk="df -h"
 alias top="htop"
@@ -80,52 +74,52 @@ alias ports="ss -tulnp"
 alias sysinfo="uname -a"
 alias cpu="lscpu"
 
-## Aliases pour les fichiers compressés
-
+# Fichiers compressés
 alias untargz="tar -xzvf"
 alias unzip="unzip -v"
 alias tarball="tar -czvf"
 alias zipfile="zip -r"
 
-## Raccourcis utiles
-
+# Divers
 alias grep="grep --color=auto"
 alias catn="cat -n"
 alias now="date '+%Y-%m-%d %H:%M:%S'"
 alias !!="!!"
 
-## Date et heure
-
+# Date/Heure
 alias date="date '+On est le %d/%m/%Y. Et il est %H h %M m %S s.'"
 alias datec='date "+%A %d %B %Y"'
 alias datef='date "+%Y-%m-%d_%H-%M-%S"'
 alias datet="date '+%T'"
 
-## Autres
-
+# Autres
 alias edit="nano"
 alias gsave="git add . && git commit -m 'Auto save' && git push"
 alias killchrome="pkill chrome"
 alias killfirefox="pkill firefox"
 \`\`\`
 
-## Personnalisation
+Personnalisation
+Tu peux modifier ~/.zshrc pour changer le thème ou ajouter des plugins. La ligne plugins=() définit ceux à charger.
 
-- Tu peux personnaliser le fichier `~/.zshrc` pour changer le thème ou ajouter d'autres plugins.
-- Les plugins sont configurés dans le fichier `~/.zshrc` sous la section `plugins=()`.
+Plugins inclus
+git — Commandes Git utiles
 
-## Plugins inclus
+z — Navigation rapide entre dossiers
 
-1. **git** — Commandes Git pratiques.
-2. **z** — Navigation rapide par historique.
-3. **sudo** — Simplifie les commandes avec sudo.
-4. **autojump** — Navigation rapide entre dossiers.
-5. **zsh-autosuggestions** — Suggestions de commandes en direct.
-6. **zsh-syntax-highlighting** — Mise en couleur de la syntaxe.
-7. **fzf-tab** — Auto-complétion avancée avec `fzf`.
-8. **zsh-vi-mode** — Mode d’édition façon `vi`.
-9. **zsh-completions** — Complétions supplémentaires pour Zsh.
+sudo — Préfixe automatique sudo
 
-## Licence
+autojump — Historique de navigation intelligent
 
-Ce projet est sous licence [MIT License].
+zsh-autosuggestions — Suggestions de commandes
+
+zsh-syntax-highlighting — Coloration syntaxique
+
+fzf-tab — Auto-complétion améliorée
+
+zsh-vi-mode — Édition type vi
+
+zsh-completions — Complétions supplémentaires
+
+Licence
+Sous licence MIT.
